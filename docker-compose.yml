@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: nginx:latest
+    ports:
+      - "8081:80"
+    volumes:
+      - /mnt/frontend:/usr/share/nginx/html
+    depends_on:
+      - api
+      - mariadb
+
+  api:
+    image: node:14
+    working_dir: /usr/src/app
+    volumes:
+      - /mnt/api:/usr/src/app
+    command: "npm start" 
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: buopen@am1n2024
+      MYSQL_DATABASE: oph
+      MYSQL_USER: oph
+      MYSQL_PASSWORD: buopen@am1n2024
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - "8082:80"
+    environment:
+      PMA_HOST: mariadb
+      PMA_USER: root
+      PMA_PASSWORD: buopen@am1n2024
+    depends_on:
+      - mariadb
+
+networks:
+  default:
+    external:
+      name: oph_network
